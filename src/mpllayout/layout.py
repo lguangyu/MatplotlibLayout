@@ -29,7 +29,7 @@ class LayoutElementFrameBase(abc.ABC):
 
 
 class LayoutAxesFrame(RectangularFrame, LayoutElementFrameBase):
-	def __init__(self, *ka, axes_class = None, **kw):
+	def __init__(self, *ka, axes_class=None, **kw):
 		super().__init__(*ka, **kw)
 		self.axes_class = axes_class
 		return
@@ -39,16 +39,16 @@ class LayoutAxesFrame(RectangularFrame, LayoutElementFrameBase):
 		fl, fr, fb, ft = self.parent.get_extent()
 		al, ar, ab, at = self.get_extent()
 		# calculate figure dimensions
-		fwidth	= left_margin + (fr - fl) + right_margin
-		fheight	= bottom_margin + (ft - fb) + top_margin
+		fwidth = left_margin + (fr - fl) + right_margin
+		fheight = bottom_margin + (ft - fb) + top_margin
 		# calcualte axes dimensions
-		left	= (al - fl + left_margin) / fwidth
-		bottom	= (ab - fb + bottom_margin) / fheight
-		width	= (ar - al) / fwidth
-		height	= (at - ab) / fheight
+		left = (al - fl + left_margin) / fwidth
+		bottom = (ab - fb + bottom_margin) / fheight
+		width = (ar - al) / fwidth
+		height = (at - ab) / fheight
 		# create axes
 		ret = figure.add_axes([left, bottom, width, height],
-			axes_class = self.axes_class)
+			axes_class=self.axes_class)
 		return ret
 
 
@@ -179,22 +179,25 @@ class LayoutCreator(object):
 	>>> layout["my-main-plot"].plot(...)
 	>>> layout["my-side-plot"].plot(...)
 	"""
-	class NonEmptyFigureError(RuntimeError): pass
-	class ElementNotPlacedError(RuntimeError): pass
+	class NonEmptyFigureError(RuntimeError):
+		pass
 
-	def __init__(self, name = "unnamed-layout", *ka,
-			origin = "bottomleft", canvas_width = None, canvas_height = None,
-			left_margin = 0.5, right_margin = 0.5, top_margin = 0.5,
-			bottom_margin = 0.5, **kw):
+	class ElementNotPlacedError(RuntimeError):
+		pass
+
+	def __init__(self, name="unnamed-layout", *ka,
+			origin="bottomleft", canvas_width=None, canvas_height=None,
+			left_margin=0.5, right_margin=0.5, top_margin=0.5,
+			bottom_margin=0.5, **kw):
 		super().__init__(*ka, **kw)
-		self.name			= name
-		self.origin			= origin
-		self.left_margin	= left_margin
-		self.right_margin	= right_margin
-		self.top_margin		= top_margin
-		self.bottom_margin	= bottom_margin
+		self.name = name
+		self.origin = origin
+		self.left_margin = left_margin
+		self.right_margin = right_margin
+		self.top_margin = top_margin
+		self.bottom_margin = bottom_margin
 		self.canvas_frame.set_size(canvas_width, canvas_height)
-		self.__frames = dict() # the dict holds all created frames
+		self.__frames = dict()  # the dict holds all created frames
 		return
 
 	@property
@@ -235,7 +238,7 @@ class LayoutCreator(object):
 		if not hasattr(self, "_matplotlib"):
 			module = importlib.import_module("matplotlib")
 			# this should have imported matplotlib.figure and matplotlib.axes
-			importlib.import_module("matplotlib.pyplot", package = module)
+			importlib.import_module("matplotlib.pyplot", package=module)
 			self._matplotlib = module
 		return self._matplotlib
 
@@ -267,7 +270,7 @@ class LayoutCreator(object):
 			self.bottom_margin + cheight, self.top_margin)
 		return
 
-	def create_figure_layout(self, figure = None, *, force = False) -> dict:
+	def create_figure_layout(self, figure=None, *, force=False) -> dict:
 		"""
 		create the layout on <figure>; if figure = None, a new figure will be
 		created from matplotlib.figure.Figure class.
@@ -282,10 +285,10 @@ class LayoutCreator(object):
 		# create all frames
 		for frame in self.iter_frames():
 			artist = frame.create_artist(figure,
-				left_margin = self.left_margin,
-				right_margin = self.right_margin,
-				bottom_margin = self.bottom_margin,
-				top_margin = self.top_margin,
+				left_margin=self.left_margin,
+				right_margin=self.right_margin,
+				bottom_margin=self.bottom_margin,
+				top_margin=self.top_margin,
 			)
 			ret[frame.name] = artist
 		return ret
@@ -301,7 +304,7 @@ class LayoutCreator(object):
 		self.canvas_frame.set_placement(self.origin, (0.0, 0.0))
 		# clear all frame's existing placements, then re-solve, finally verify
 		for frame in self.iter_frames():
-			frame.clear_placement() # clear existing placement
+			frame.clear_placement()  # clear existing placement
 		for frame in self.iter_frames():
 			frame.solve_placement_resursive()
 		for frame in self.iter_frames():
@@ -331,7 +334,7 @@ class LayoutCreator(object):
 			exception that may violate this rule is if the ref <pin> is pmin_pin
 			or pmax_pin,
 		"""
-		assert pin.get_placement() == 0 # we want exact 0, not something close
+		assert pin.get_placement() == 0  # we want exact 0, not something close
 		rpos = pin.ruler_pos
 		# calculate from the inc_max->pin
 		rlen_u = 0 if rpos == 1.0 else inc_max / (1.0 - rpos)
@@ -375,7 +378,7 @@ class LayoutCreator(object):
 
 	############################################################################
 	# children frame management methods
-	def add_frame(self, name, *ka, frame_class = LayoutAxesFrame, **kw):
+	def add_frame(self, name, *ka, frame_class=LayoutAxesFrame, **kw):
 		"""
 		factory function of layout frames, create and return a new frame with
 		type <frame_class>.
@@ -389,14 +392,14 @@ class LayoutCreator(object):
 			default
 		"""
 		if name in self.__frames:
-			raise ValueError("frame '%s' already exists, use another name"\
+			raise ValueError("frame '%s' already exists, use another name"
 				% name)
 		if name == "figure":
 			raise ValueError("name 'figure' is preserved, use another name")
 		if not issubclass(frame_class, LayoutElementFrameBase):
 			raise TypeError("frame_class must be a subclass of "
 				"LayoutElementFrameBase, not '%s'" % frame_class.__name__)
-		frame = frame_class(name, *ka, parent = self.canvas_frame, **kw)
+		frame = frame_class(name, *ka, parent=self.canvas_frame, **kw)
 		self.__frames[name] = frame
 		return frame
 

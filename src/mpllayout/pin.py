@@ -58,10 +58,10 @@ class PinBase(PlaceableElementBase):
 
 	def solve_placement(self):
 		# when calling this method, assumes not self.is_placed() (by base class)
-		# and further assumes self.is_placeable() 
+		# and further assumes self.is_placeable()
 		if not self.figpos_ref.is_placed():
 			raise type(self).PlacementUnsolvableError("dependency '%s' ("
-				"required by '%s') cannot be solved"\
+				"required by '%s') cannot be solved"
 				% (self.figpos_ref.global_name, self.global_name))
 		# else solve position based on the dependency
 		self.set_placement(self.figpos_ref.figpos + self.figpos_offset)
@@ -77,7 +77,7 @@ class PinBase(PlaceableElementBase):
 			if not math.isclose(offset, self.figpos_offset):
 				raise type(self).IncomplyingPlacementError(
 					"resolved %s and %s do not comply with offset '%.5f'; "
-					"usually due to assigned conflicting positional relations"\
+					"usually due to assigned conflicting positional relations"
 					% (str(self), str(self.figpos_ref), self.figpos_offset))
 		return
 

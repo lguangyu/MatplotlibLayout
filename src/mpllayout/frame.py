@@ -44,10 +44,11 @@ class Frame2DBase(FrameBase):
 	placement-related methods in this class are summarized from or forwarded to
 	those dependency rulers.
 	"""
+
 	def __init__(self, *ka, **kw):
 		super().__init__(*ka, **kw)
-		self._h_ruler = LinearRuler("h_ruler", parent = self)
-		self._v_ruler = LinearRuler("v_ruler", parent = self)
+		self._h_ruler = LinearRuler("h_ruler", parent=self)
+		self._v_ruler = LinearRuler("v_ruler", parent=self)
 		return
 
 	############################################################################
@@ -75,7 +76,7 @@ class Frame2DBase(FrameBase):
 		directly set a anchor on-figure position; doing this will erase the
 		previously set anchor placement ref
 		"""
-		if not ((isinstance(position, tuple) or isinstance(offsets, list))\
+		if not ((isinstance(position, tuple) or isinstance(offsets, list))
 			and (len(position) == 2)):
 			raise TypeError("position must be a tuple or list of length 2")
 		pins = self.get_ruler_pins_by_anchor_name(anchor)
@@ -84,7 +85,7 @@ class Frame2DBase(FrameBase):
 			pin.set_placement(pos)
 		return
 
-	def clear_placement(self, anchor = None):
+	def clear_placement(self, anchor=None):
 		"""
 		clear anchor placement; if anchor = None, clear all.
 		"""
@@ -98,8 +99,8 @@ class Frame2DBase(FrameBase):
 		p1, p2 = self.get_ruler_pins_by_anchor_name(anchor)
 		return p1.get_placement_ref(), p2.get_placement_ref()
 
-	def set_anchor(self, anchor, ref_frame = None, ref_anchor = None,
-			offsets = None):
+	def set_anchor(self, anchor, ref_frame=None, ref_anchor=None,
+			offsets=None):
 		"""
 		set self's <anchor> in reference to ref_frame's <ref_anchor> with given
 		offsets in horizontal/vertical coordinates.
@@ -109,7 +110,7 @@ class Frame2DBase(FrameBase):
 		if ref_frame is None:
 			if self.parent is None:
 				raise ValueError("ref_frame = None assumes using parent as the "
-					"reference frame. however the parent of %s is None"\
+					"reference frame. however the parent of %s is None"
 					% self.global_name)
 			ref_frame = self.parent
 		elif not isinstance(ref_frame, Frame2DBase):
@@ -117,14 +118,14 @@ class Frame2DBase(FrameBase):
 				" not '%s'" % type(ref_frame).__name__)
 		if offsets is None:
 			offsets = (0.0, 0.0)
-		if not ((isinstance(offsets, tuple) or isinstance(offsets, list))\
+		if not ((isinstance(offsets, tuple) or isinstance(offsets, list))
 			and (len(offsets) == 2)):
 			raise TypeError("offsets must be a tuple or list of length 2")
 		if ref_anchor is None:
 			ref_anchor = anchor
 		for pin, pref, offset in zip(self.get_ruler_pins_by_anchor_name(anchor),
 				ref_frame.get_ruler_pins_by_anchor_name(ref_anchor), offsets):
-			pin.set_placement_ref(pref, offset = float(offset))
+			pin.set_placement_ref(pref, offset=float(offset))
 		return
 
 	def clear_anchor(self, anchor):
@@ -161,38 +162,38 @@ class RectangularFrame(Frame2DBase):
 
 	__anchors_getter = {
 		# bottom anchors
-		"bottomleft":	lambda o: (o._h_ruler.pmin_pin, o._v_ruler.pmin_pin),
-		"bottom":		lambda o: (o._h_ruler.pmid_pin, o._v_ruler.pmin_pin),
-		"bottomright":	lambda o: (o._h_ruler.pmax_pin, o._v_ruler.pmin_pin),
+		"bottomleft": lambda o: (o._h_ruler.pmin_pin, o._v_ruler.pmin_pin),
+		"bottom": lambda o: (o._h_ruler.pmid_pin, o._v_ruler.pmin_pin),
+		"bottomright": lambda o: (o._h_ruler.pmax_pin, o._v_ruler.pmin_pin),
 		# vertical center anchors
-		"left":			lambda o: (o._h_ruler.pmin_pin, o._v_ruler.pmid_pin),
-		"center":		lambda o: (o._h_ruler.pmid_pin, o._v_ruler.pmid_pin),
-		"right":		lambda o: (o._h_ruler.pmax_pin, o._v_ruler.pmid_pin),
+		"left": lambda o: (o._h_ruler.pmin_pin, o._v_ruler.pmid_pin),
+		"center": lambda o: (o._h_ruler.pmid_pin, o._v_ruler.pmid_pin),
+		"right": lambda o: (o._h_ruler.pmax_pin, o._v_ruler.pmid_pin),
 		# top anchors
-		"topleft":		lambda o: (o._h_ruler.pmin_pin, o._v_ruler.pmax_pin),
-		"top":			lambda o: (o._h_ruler.pmid_pin, o._v_ruler.pmax_pin),
-		"topright":		lambda o: (o._h_ruler.pmax_pin, o._v_ruler.pmax_pin),
+		"topleft": lambda o: (o._h_ruler.pmin_pin, o._v_ruler.pmax_pin),
+		"top": lambda o: (o._h_ruler.pmid_pin, o._v_ruler.pmax_pin),
+		"topright": lambda o: (o._h_ruler.pmax_pin, o._v_ruler.pmax_pin),
 	}
 
 	def iter_anchor_names(self):
 		return self.__anchors_getter.keys()
 
 	def get_ruler_pins_by_anchor_name(self, anchor) -> (RulerPin, RulerPin):
-		anchor = anchor.lower() # make case insensitive
+		anchor = anchor.lower()  # make case insensitive
 		if anchor not in self.__anchors_getter:
-			raise ValueError("%s has no anchor '%s'"\
+			raise ValueError("%s has no anchor '%s'"
 				% (type(self).__name__, anchor))
 		return self.__anchors_getter[anchor](self)
 
 	def get_width(self):
-		return self._h_ruler.get_ruler_length(allow_calculated = True)
+		return self._h_ruler.get_ruler_length(allow_calculated=True)
 
 	def set_width(self, value):
 		self._h_ruler.set_ruler_length(value)
 		return
 
 	def get_height(self):
-		return self._v_ruler.get_ruler_length(allow_calculated = True)
+		return self._v_ruler.get_ruler_length(allow_calculated=True)
 
 	def set_height(self, value):
 		self._v_ruler.set_ruler_length(value)

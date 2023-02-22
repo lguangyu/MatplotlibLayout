@@ -12,7 +12,7 @@ class RulerBase(PlaceableElementBase):
 		self.init_pins()
 		return
 
-	def create_pin(self, name, *ka, pin_type = RulerPin, **kw) -> RulerPin:
+	def create_pin(self, name, *ka, pin_type=RulerPin, **kw) -> RulerPin:
 		"""
 		create a RulerPin instance owned by 'self'. should be used as the only
 		factory of RulerPin subclasses. *ka and **kw are fowarded to
@@ -29,7 +29,7 @@ class RulerBase(PlaceableElementBase):
 			raise ValueError("attr '%s' conflicts with existing attribute name "
 				"in class '%s'" % (attr_name, type(self).__name__))
 		# create pin: (signature) parent, name, *ka, **kw
-		pin = pin_type(name, *ka, parent = self, **kw)
+		pin = pin_type(name, *ka, parent=self, **kw)
 		self.pins_dict[name] = pin
 		setattr(self, attr_name, pin)
 		return pin
@@ -69,7 +69,7 @@ class RulerBase(PlaceableElementBase):
 		"""
 		return
 
-	def get_ruler_length(self, *, allow_calculated = False):
+	def get_ruler_length(self, *, allow_calculated=False):
 		"""
 		ruler_length is the unit length of ruler position. this method will
 		first check if it has already been set (by set_ruler_length()), and
@@ -137,20 +137,20 @@ class LinearRuler(RulerBase):
 		return ret
 
 	def init_pins(self):
-		self.create_pin("pmax", ruler_pos = 1.0)
-		self.create_pin("pmid", ruler_pos = 0.5)
-		self.create_pin("pmin", ruler_pos = 0.0)
+		self.create_pin("pmax", ruler_pos=1.0)
+		self.create_pin("pmid", ruler_pos=0.5)
+		self.create_pin("pmin", ruler_pos=0.0)
 		return
 
 	def is_placeable(self):
 		# LinearRuler requires at least one point to be placeable (set with
 		# referennce) and an extra point, or ulength set.
 		count = len(self._get_anchorable_pins("both"))
-		if self.get_ruler_length(allow_calculated = False) is not None:
+		if self.get_ruler_length(allow_calculated=False) is not None:
 			count += 1
 		return (count >= 2)
 
-	def _get_anchorable_pins(self, filt = "both") -> set:
+	def _get_anchorable_pins(self, filt="both") -> set:
 		"""
 		get pins that can potentially be used as anchorage when solving for
 		ruler placement. 'anchorable pins' refer to those either already has
@@ -164,11 +164,11 @@ class LinearRuler(RulerBase):
 			which pins to filter, choose from 'placed', 'placeable' or 'both'
 		"""
 		if filt == "both":
-			cond = lambda p: (p.is_placed() or p.is_placeable())
+			def cond(p): return (p.is_placed() or p.is_placeable())
 		elif filt == "placed":
-			cond = lambda p: p.is_placed()
+			def cond(p): return p.is_placed()
 		elif filt == "placeable":
-			cond = lambda p: p.is_placeable()
+			def cond(p): return p.is_placeable()
 		else:
 			raise ValueError("unrecognized filt value: '%s'" % filt)
 		return set(filter(cond, self.iter_pins()))
@@ -179,7 +179,7 @@ class LinearRuler(RulerBase):
 		if not self.is_placeable():
 			raise type(self).PlacementUnsolvableError("insufficient information"
 				" to solve '%s'" % self.global_name)
-		rlen = self.get_ruler_length(allow_calculated = True)
+		rlen = self.get_ruler_length(allow_calculated=True)
 		if rlen is None:
 			raise type(self).DependencyUnplacedError("solve_placement() called "
 				"before dependency placements being solved. if this error "
@@ -192,7 +192,7 @@ class LinearRuler(RulerBase):
 		for p in self.iter_pins():
 			if p.is_placed():
 				continue
-			p.set_placement(rp.get_placement()\
+			p.set_placement(rp.get_placement()
 				+ (p.ruler_pos - rp.ruler_pos) * rlen)
 		return
 
@@ -201,13 +201,13 @@ class LinearRuler(RulerBase):
 		for p in self.iter_pins():
 			p.verify_placement()
 		# check if pmid is right in the middle between pmax and pmin
-		if not math.isclose(self.pmax_pin.get_placement()\
+		if not math.isclose(self.pmax_pin.get_placement()
 			+ self.pmin_pin.get_placement(), self.pmid_pin.get_placement() * 2):
 			raise type(self).IncomplyingPlacementError("resolved %s, %s and %s "
-				"does not comply with in-ruler positions"\
+				"does not comply with in-ruler positions"
 				% (str(self.pmin_pin), str(self.pmid_pin), str(self.pmax_pin)))
 		if self.pmax_pin.get_placement() < self.pmin_pin.get_placement():
 			raise type(self).IncomplyingPlacementError("resolved %s position "
-				"less than %s implies negative ruler length"\
+				"less than %s implies negative ruler length"
 				% (str(self.pmax_pin), str(self.pmin_pin)))
 		return

@@ -7,7 +7,7 @@ from mpllayout import PinBase, RulerPin
 
 
 ################################################################################
-# test PinBase __init__() 
+# test PinBase __init__()
 def test_init_PinBase(): pass
 
 
@@ -15,11 +15,11 @@ def test_init_PinBase(): pass
 # test PinBase subclasses behavior with dangling pins (parent = None)
 def test_dangling_pin():
 	pname = "test-pin"
-	PinBase(pname, parent = None)
+	PinBase(pname, parent=None)
 	with pytest.raises(ValueError):
-		RulerPin(pname, ruler_pos = random.random())
+		RulerPin(pname, ruler_pos=random.random())
 	with pytest.raises(ValueError):
-		RulerPin(pname, ruler_pos = random.random(), parent = None)
+		RulerPin(pname, ruler_pos=random.random(), parent=None)
 	return
 
 
@@ -38,15 +38,17 @@ def _test_placement(pin):
 	assert pin.is_placed() == False
 	return
 
+
 def test_placement_PinBase():
 	pref = PinBase("test-pin-ref")
-	_test_placement(PinBase("test-pin", parent = None))
-	_test_placement(PinBase("test-pin", parent = pref))
+	_test_placement(PinBase("test-pin", parent=None))
+	_test_placement(PinBase("test-pin", parent=pref))
 	return
+
 
 def test_placement_RulerPin():
 	pref = PinBase("test-pin-ref")
-	_test_placement(RulerPin("test-pin", ruler_pos = 0, parent = pref))
+	_test_placement(RulerPin("test-pin", ruler_pos=0, parent=pref))
 	return
 
 
@@ -56,26 +58,28 @@ def _test_placement_ref(pin):
 	pref = PinBase("test-pin-ref")
 	pin.clear_placement_ref()
 	assert pin.is_placeable() == False
-	pin.set_placement_ref(pref, offset = random.random())
+	pin.set_placement_ref(pref, offset=random.random())
 	assert pin.is_placeable() == True
-	pin.set_placement_ref(None, offset = random.random())
+	pin.set_placement_ref(None, offset=random.random())
 	assert pin.is_placeable() == False
 	# allow self-reference, we will check this later in circular dependency
-	pin.set_placement_ref(pin, offset = random.random())
+	pin.set_placement_ref(pin, offset=random.random())
 	assert pin.is_placeable() == True
 	pin.clear_placement_ref()
 	assert pin.is_placeable() == False
 	return
 
+
 def test_placement_ref_PinBase():
 	pref = PinBase("test-pin-ref")
-	_test_placement_ref(PinBase("test-pin", parent = None))
-	_test_placement_ref(PinBase("test-pin", parent = pref))
+	_test_placement_ref(PinBase("test-pin", parent=None))
+	_test_placement_ref(PinBase("test-pin", parent=pref))
 	return
+
 
 def test_placement_ref_RulerPin():
 	pref = PinBase("test-pin-ref")
-	_test_placement_ref(RulerPin("test-pin", ruler_pos = 0, parent = pref))
+	_test_placement_ref(RulerPin("test-pin", ruler_pos=0, parent=pref))
 	return
 
 
@@ -84,31 +88,32 @@ def test_placement_ref_RulerPin():
 def test_get_dependencies_PinBase():
 	pref = PinBase("test-pin-ref")
 	# without parent
-	pin = PinBase("test-pin", parent = None)
+	pin = PinBase("test-pin", parent=None)
 	pin.clear_placement_ref()
 	assert pin.get_dependencies() == tuple()
-	pin.set_placement_ref(pref, offset = random.random())
+	pin.set_placement_ref(pref, offset=random.random())
 	assert pin.get_dependencies() == (pref, )
 	pin.clear_placement_ref()
 	assert pin.get_dependencies() == tuple()
 	# with parent
-	pin = PinBase("test-pin", parent = PinBase("test-pin-parent"))
+	pin = PinBase("test-pin", parent=PinBase("test-pin-parent"))
 	pin.clear_placement_ref()
 	assert pin.get_dependencies() == tuple()
-	pin.set_placement_ref(pref, offset = random.random())
+	pin.set_placement_ref(pref, offset=random.random())
 	assert pin.get_dependencies() == (pref, )
 	pin.clear_placement_ref()
 	assert pin.get_dependencies() == tuple()
 	return
 
+
 def test_get_dependencies_RulerPin():
 	pref = PinBase("test-pin-ref")
 	ppar = PinBase("test-pin-parent")
 	# with parent
-	pin = RulerPin("test-pin", ruler_pos = random.random(), parent = ppar)
+	pin = RulerPin("test-pin", ruler_pos=random.random(), parent=ppar)
 	pin.clear_placement_ref()
 	assert pin.get_dependencies() == (ppar, )
-	pin.set_placement_ref(pref, offset = random.random())
+	pin.set_placement_ref(pref, offset=random.random())
 	assert pin.get_dependencies() == (pref, )
 	pin.clear_placement_ref()
 	assert pin.get_dependencies() == (ppar, )
@@ -124,7 +129,7 @@ def test_verify_placement_PinBase():
 		pref_pos = random.random()
 		offset = random.random()
 		pref.set_placement(pref_pos)
-		pin.set_placement_ref(pref, offset = offset)
+		pin.set_placement_ref(pref, offset=offset)
 		# unplaced error
 		with pytest.raises(PinBase.PlacementError):
 			pin.clear_placement()
@@ -161,8 +166,8 @@ def test_solve_placement_recursive_PinBase():
 		dep_path = list()
 		last_pin = pins[i - 1]
 		# check dependency tracking
-		last_pin.solve_placement_resursive(dep_path = dep_path)
-		assert not dep_path # should pop'd everything
+		last_pin.solve_placement_resursive(dep_path=dep_path)
+		assert not dep_path  # should pop'd everything
 		# check placement of each pin
 		pos = 0.0
 		for pin, offset in zip(pins, offsets):
@@ -181,9 +186,10 @@ def _reset_chain_dependency_PinBase(pins: list):
 		pins[i].set_placement_ref(pins[i - 1], random.random())
 	return
 
+
 def test_circular_dependency_PinBase():
 	n_pins = 20
-	assert n_pins > 0 # this ensures pins[-1] below will always work
+	assert n_pins > 0  # this ensures pins[-1] below will always work
 	pins = [PinBase("test-pin-%u" % i) for i in range(n_pins)]
 	# a chain of pins, reset to P_i <- P_(i+1).
 	# if P_i set dependency to any of the pins after it, should cause a circular
@@ -192,7 +198,7 @@ def test_circular_dependency_PinBase():
 	for i in range(n_pins):
 		for j in range(i, n_pins):
 			_reset_chain_dependency_PinBase(pins)
-			pins[i].set_placement_ref(pins[j], offset = random.random())
+			pins[i].set_placement_ref(pins[j], offset=random.random())
 			with pytest.raises(PinBase.CircularDependencyError):
 				pins[-1].solve_placement_resursive()
 	return

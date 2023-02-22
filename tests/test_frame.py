@@ -9,4 +9,3 @@ from mpllayout import Frame2DBase, RectangularFrame
 def test_init_RectangularFrame():
 	RectangularFrame("test-frame")
 	return
-

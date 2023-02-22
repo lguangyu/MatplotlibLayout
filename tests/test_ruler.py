@@ -15,6 +15,7 @@ def _test_ruler_pin_global_name(ruler):
 		ruler.get_pin(pname).global_name == rname + "/" + pname
 	return
 
+
 def test_ruler_pin_global_name_LinearRuler():
 	_test_ruler_pin_global_name(LinearRuler("test-ruler"))
 	return
@@ -27,6 +28,7 @@ def _test_ruler_pin_ruler_position(ruler, pin_ruler_pos_dict):
 		assert ruler.get_pin(pname).ruler_pos == ruler_pos
 	return
 
+
 def test_ruler_pin_ruler_position_LinearRuler():
 	_test_ruler_pin_ruler_position(LinearRuler("test-ruler"),
 		{"pmin": 0.0, "pmid": 0.5, "pmax": 1.0})
@@ -38,9 +40,10 @@ def test_ruler_pin_ruler_position_LinearRuler():
 def _test_ruler_length_negative(ruler, rlen_value):
 	with pytest.raises(ValueError):
 		ruler.clear_ruler_length()
-		assert ruler.get_ruler_length(allow_calculated = False) is None
+		assert ruler.get_ruler_length(allow_calculated=False) is None
 		ruler.set_ruler_length(rlen_value)
 	return
+
 
 def test_ruler_length_negative_LinearRuler():
 	ruler = LinearRuler("test-ruler")
@@ -56,6 +59,7 @@ def test_ruler_length_negative_LinearRuler():
 def _test_ruler_placeable_check_init_status(ruler):
 	assert ruler.is_placeable() == False
 	return
+
 
 def test_ruler_placeable_check_init_status_LinearRuler():
 	_test_ruler_placeable_check_init_status(LinearRuler("test-ruler"))
@@ -91,6 +95,7 @@ def _test_ruler_placeable_check_1p(ruler):
 		assert pin.is_placeable() == False
 	return
 
+
 def test_ruler_placeable_check_1p_LinearRuler():
 	_test_ruler_placeable_check_1p(LinearRuler("test-ruler"))
 	return
@@ -99,7 +104,7 @@ def test_ruler_placeable_check_1p_LinearRuler():
 ################################################################################
 # test each Ruler subclass is_placeable() behavior when certain point positions
 # are set
-def _test_ruler_manual_placement(ruler, case_list: list, exception = None):
+def _test_ruler_manual_placement(ruler, case_list: list, exception=None):
 	# if exception set, then expect to raise an exception of certain type
 	for c in case_list:
 		ruler.clear_placement()
@@ -112,27 +117,29 @@ def _test_ruler_manual_placement(ruler, case_list: list, exception = None):
 			ruler.verify_placement()
 	return
 
+
 def test_ruler_comply_placement_LinearRuler():
 	rn = random.random()
 	case_list = [
-		{"pmin": 0.0, "pmid": 0.0, "pmax": 0.0}, # all zero
-		{"pmin": rn * 1.0, "pmid": rn * 1.0, "pmax": rn * 1.0}, # non-zero, +
-		{"pmin": rn * -1., "pmid": rn * -1., "pmax": rn * -1.}, # non-zero, -
-		{"pmin": rn * 0.0, "pmid": rn * 1.0, "pmax": rn * 2.0}, # normal
+		{"pmin": 0.0, "pmid": 0.0, "pmax": 0.0},  # all zero
+		{"pmin": rn * 1.0, "pmid": rn * 1.0, "pmax": rn * 1.0},  # non-zero, +
+		{"pmin": rn * -1., "pmid": rn * -1., "pmax": rn * -1.},  # non-zero, -
+		{"pmin": rn * 0.0, "pmid": rn * 1.0, "pmax": rn * 2.0},  # normal
 	]
 	_test_ruler_manual_placement(LinearRuler("test-ruler"), case_list,
-		exception = None)
+		exception=None)
 	return
+
 
 def test_ruler_incomply_placement_LinearRuler():
 	rn = random.random()
 	case_list = [
-		{"pmin": rn * 0.0, "pmid": rn * -1., "pmax": rn * -2.}, # pmax < pmin
-		{"pmin": rn * 0.0, "pmid": rn * 1.5, "pmax": rn * 2.0}, # pmid too large
-		{"pmin": rn * 0.0, "pmid": rn * 0.5, "pmax": rn * 2.0}, # pmid too small
+		{"pmin": rn * 0.0, "pmid": rn * -1., "pmax": rn * -2.},  # pmax < pmin
+		{"pmin": rn * 0.0, "pmid": rn * 1.5, "pmax": rn * 2.0},  # pmid too large
+		{"pmin": rn * 0.0, "pmid": rn * 0.5, "pmax": rn * 2.0},  # pmid too small
 	]
 	_test_ruler_manual_placement(LinearRuler("test-ruler"), case_list,
-		exception = PlaceableElementBase.IncomplyingPlacementError)
+		exception=PlaceableElementBase.IncomplyingPlacementError)
 	return
 
 
@@ -148,7 +155,7 @@ def test_linear_ruler_local_two_point_placement():
 		for j in range(i + 1, n_pnames):
 			assert i < j
 			r.clear_placement()
-			assert r.get_ruler_length(allow_calculated = False) is None
+			assert r.get_ruler_length(allow_calculated=False) is None
 			pi = r.get_pin(pnames[i])
 			pj = r.get_pin(pnames[j])
 			pi.set_placement(1.0)
@@ -218,9 +225,10 @@ def _test_non_reference_pin_dependency_LinearRuler_2p(ruler, pn1, pn2, pnt):
 	p2.set_placement(p1_pos + random.random())
 	# create test pin
 	test_pin = PinBase("test-pin")
-	test_pin.set_placement_ref(ruler.get_pin(pnt), offset = random.random())
+	test_pin.set_placement_ref(ruler.get_pin(pnt), offset=random.random())
 	test_pin.solve_placement_resursive()
 	return
+
 
 def _test_non_reference_pin_dependency_LinearRuler_pl(ruler, pn, rlen, pnt):
 	assert pn != pnt, "the reference pn must be different than test pin (pnt)"
@@ -230,9 +238,10 @@ def _test_non_reference_pin_dependency_LinearRuler_pl(ruler, pn, rlen, pnt):
 	ruler.set_ruler_length(rlen)
 	# create test pin
 	test_pin = PinBase("test-pin")
-	test_pin.set_placement_ref(ruler.get_pin(pnt), offset = random.random())
+	test_pin.set_placement_ref(ruler.get_pin(pnt), offset=random.random())
 	test_pin.solve_placement_resursive()
 	return
+
 
 def test_non_reference_pin_dependency_LinearRuler():
 	ruler = LinearRuler("test-ruler")
@@ -244,7 +253,7 @@ def test_non_reference_pin_dependency_LinearRuler():
 			pnt = pnames[3 - i - j]
 			_test_non_reference_pin_dependency_LinearRuler_2p(ruler,
 				pn1, pn2, pnt)
-	for i, j in itertools.product(range(n_pnames), repeat = 2):
+	for i, j in itertools.product(range(n_pnames), repeat=2):
 		if i == j:
 			continue
 		_test_non_reference_pin_dependency_LinearRuler_pl(ruler,

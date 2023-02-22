@@ -4,7 +4,7 @@ import abc
 
 
 class ElementBase(object):
-	def __init__(self, name: str, *ka, parent = None, **kw):
+	def __init__(self, name: str, *ka, parent=None, **kw):
 		super().__init__(*ka, **kw)
 		self.set_name(name)
 		self.set_parent(parent)
@@ -15,6 +15,7 @@ class ElementBase(object):
 	@property
 	def parent(self):
 		return self._parent
+
 	def set_parent(self, parent):
 		if not (isinstance(parent, ElementBase) or parent is None):
 			raise TypeError("parent must be instance of ElementBase or None, "
@@ -27,9 +28,10 @@ class ElementBase(object):
 	@property
 	def name(self):
 		return self._name
+
 	def set_name(self, name):
 		if not isinstance(name, str):
-			raise TypeError("name must be instance of str, not '%s'"\
+			raise TypeError("name must be instance of str, not '%s'"
 				% type(name).__name__)
 		if "/" in name:
 			raise ValueError("character '/' not allowed in name string")
@@ -74,11 +76,20 @@ class PlaceableElementBase(abc.ABC, ElementBase):
 	interaction between different elements, especially the dependency chain in
 	solving the placement of elements.
 	"""
-	class PlacementError(RuntimeError): pass
-	class CircularDependencyError(PlacementError): pass
-	class DependencyUnplacedError(PlacementError): pass
-	class IncomplyingPlacementError(PlacementError): pass
-	class PlacementUnsolvableError(PlacementError): pass
+	class PlacementError(RuntimeError):
+		pass
+
+	class CircularDependencyError(PlacementError):
+		pass
+
+	class DependencyUnplacedError(PlacementError):
+		pass
+
+	class IncomplyingPlacementError(PlacementError):
+		pass
+
+	class PlacementUnsolvableError(PlacementError):
+		pass
 
 	@abc.abstractmethod
 	def is_placeable(self) -> bool:
@@ -166,7 +177,7 @@ class PlaceableElementBase(abc.ABC, ElementBase):
 			dep_path.append(self)
 			# solve dependencies first
 			for dep in self.get_dependencies():
-				dep.solve_placement_resursive(dep_path = dep_path)
+				dep.solve_placement_resursive(dep_path=dep_path)
 			# here we check self.is_placed() again as in some cases dependencies
 			# may help solve self placement
 			if not self.is_placed():
