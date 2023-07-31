@@ -20,6 +20,9 @@ classifiers = [
 	"Programming Language :: Python :: 3.10",
 	"Operating System :: OS Independent",
 ]
+dependencies = [
+	"matplotlib>=3.4.0",
+]
 dynamic = [
 	"version",
 	"readme",
