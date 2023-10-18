@@ -19,6 +19,10 @@ classifiers = [
 dependencies = ["matplotlib>=3.4.0"]
 dynamic = ["version", "readme"]
 
+[project.urls]
+"Homepage" = "https://github.com/lguangyu/MatplotlibLayout.git"
+"Bug Tracker" = "https://github.com/lguangyu/MatplotlibLayout/issues"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
