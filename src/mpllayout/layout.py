@@ -255,7 +255,8 @@ class LayoutCreator(object):
 	def _get_figure(self, figure, force):
 		# create the figure if input <figure> is None
 		if figure is None:
-			figure = self.matplotlib.figure.Figure()
+			# figure = self.matplotlib.figure.Figure()
+			figure = self.matplotlib.pyplot.figure()
 		if not (self._is_figure_empty(figure) or force):
 			raise type(self).NonEmptyFigureError("input figure is not empty; "
 				"use a figure object created from anew or set force=True")

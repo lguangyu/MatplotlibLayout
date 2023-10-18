@@ -1,24 +1,5 @@
-# Mpatplotlib Layout
+#!/usr/bin/env python3
 
-Easily create axes layouts for complex matplotlib figures.
-
-## Dependencies
-
-* python >= 3.7.0
-* matplotlib >= 3.4
-
-## Example
-
-This package allows easy and programmable creation of matplotlib figure layouts
-using the actual size and relative positioning of axes. This is useful for
-complex, multi-axes figures, especially those with non-grid arrangements.
-
-This piece of example tends to create a figure layout with below schematics:
-
-![figure scheme](example/example.annotated.png)
-
-
-```python
 import matplotlib
 import matplotlib.pyplot
 from mpllayout import LayoutCreator
@@ -85,8 +66,3 @@ ax3.text(0.5, 0.5, "demo_axes_3", transform=ax3.transAxes,
 
 # show the figure
 matplotlib.pyplot.show()
-```
-
-This will generate a figure looks like below:
-
-![result layout](example/example.png)

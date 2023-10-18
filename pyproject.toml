@@ -1,16 +1,12 @@
 [build-system]
-requires = [
-	"setuptools",
-]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "mpllayout"
 description = "Easily create axes layout on matplotlib figure"
-authors = [
-	{name = "Guangyu Li", email = "gl343@cornell.edu"},
-]
-license = {text = "GNU General Public License v3"}
+authors = [{ name = "Guangyu Li", email = "gl343@cornell.edu" }]
+license = { text = "GNU General Public License v3" }
 requires-python = ">=3.7"
 classifiers = [
 	"Programming Language :: Python :: 3",
@@ -20,26 +16,15 @@ classifiers = [
 	"Programming Language :: Python :: 3.10",
 	"Operating System :: OS Independent",
 ]
-dependencies = [
-	"matplotlib>=3.4.0",
-]
-dynamic = [
-	"version",
-	"readme",
-]
-
-[project.scripts]
-opu_analysis = "opu_analysis_lib:OPUAnalysis.cli_main"
-opu_transform_labspec_txt = "opu_analysis_lib:SpecFromLabspecTxt.cli_main"
+dependencies = ["matplotlib>=3.4.0"]
+dynamic = ["version", "readme"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.dynamic]
-version = {attr = "mpllayout.__version__"}
-readme = {file = "README.md"}
+version = { attr = "mpllayout.__version__" }
+readme = { file = "README.md" }
 
 [tool.pytest]
-testpaths = [
-	"tests",
-]
+testpaths = ["tests"]
