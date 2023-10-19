@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mpllayout"
-description = "Easily create axes layout on matplotlib figure"
+description = "Easily create axes layouts for complex matplotlib figures."
 authors = [{ name = "Guangyu Li", email = "gl343@cornell.edu" }]
 license = { text = "GNU General Public License v3" }
 requires-python = ">=3.7"
@@ -28,7 +28,7 @@ where = ["src"]
 
 [tool.setuptools.dynamic]
 version = { attr = "mpllayout.__version__" }
-readme = { file = "README.md" }
+readme = { file = "README.md", content-type = "text/markdown" }
 
 [tool.pytest]
 testpaths = ["tests"]

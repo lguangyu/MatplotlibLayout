@@ -15,7 +15,7 @@ complex, multi-axes figures, especially those with non-grid arrangements.
 
 This piece of example tends to create a figure layout with below schematics:
 
-![figure scheme](example/example.annotated.png)
+![figure scheme](https://raw.githubusercontent.com/lguangyu/MatplotlibLayout/master/example/example.annotated.png)
 
 
 ```python
@@ -89,4 +89,4 @@ matplotlib.pyplot.show()
 
 This will generate a figure looks like below:
 
-![result layout](example/example.png)
+![result layout](https://raw.githubusercontent.com/lguangyu/MatplotlibLayout/master/example/example.png)
